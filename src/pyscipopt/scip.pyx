@@ -4596,6 +4596,21 @@ cdef class Model:
         assert isinstance(var, Variable), "The given variable is not a pyvar, but %s" % var.__class__.__name__
         PY_SCIP_CALL(SCIPchgVarBranchPriority(self._scip, var.scip_var, priority))
 
+
+def executeNodeSel(self, str name): 
+    cdef SCIP_NODESEL* nodesel 
+    cdef SCIP_RESULT result 
+    cdef SCIP_NODE* scip_node
+    nodesel = SCIPfindNodesel(self._scip, name.encode("UTF-8"))
+    if nodesel == NULL:
+        raise ValueError('Error: Node selector not found!')
+    PY_SCIP_CALL(nodesel.nodeselselect(self._scip, nodesel, &scip_node))
+    return Node.create(scip_node)
+
+
+
+
+
 # debugging memory management
 def is_memory_freed():
     return BMSgetMemoryUsed() == 0
