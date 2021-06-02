@@ -635,6 +635,7 @@ cdef extern from "scip/scip.h":
 
     # Node Methods
     SCIP_NODE* SCIPgetCurrentNode(SCIP* scip)
+    SCIP_NODE* SCIPgetRootNode(SCIP* scip)
     SCIP_NODE* SCIPnodeGetParent(SCIP_NODE* node)
     SCIP_Longint SCIPnodeGetNumber(SCIP_NODE* node)
     int SCIPnodeGetDepth(SCIP_NODE* node)
@@ -1670,6 +1671,14 @@ cdef extern from "scip/scip_tree.h":
 cdef extern from "scip/scip_var.h":
     SCIP_RETCODE SCIPchgVarBranchPriority(SCIP* scip, SCIP_VAR* var, int branchpriority)
 
+
+cdef extern from "scip/scip_nodesel.h":
+    SCIP_NODESEL* SCIPfindNodesel(SCIP* scip, const char* name)
+
+
+
+
+
 cdef class Expr:
     cdef public terms
 
@@ -1732,6 +1741,7 @@ cdef class Node:
 
     @staticmethod
     cdef create(SCIP_NODE* scipnode)
+
 
 cdef class Variable(Expr):
     cdef SCIP_VAR* scip_var

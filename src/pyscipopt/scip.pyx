@@ -4596,16 +4596,46 @@ cdef class Model:
         assert isinstance(var, Variable), "The given variable is not a pyvar, but %s" % var.__class__.__name__
         PY_SCIP_CALL(SCIPchgVarBranchPriority(self._scip, var.scip_var, priority))
 
+#   Model ADDONS
 
-def executeNodeSel(self, str name): 
-    cdef SCIP_NODESEL* nodesel 
-    cdef SCIP_RESULT result 
-    cdef SCIP_NODE* scip_node
-    nodesel = SCIPfindNodesel(self._scip, name.encode("UTF-8"))
-    if nodesel == NULL:
-        raise ValueError('Error: Node selector not found!')
-    PY_SCIP_CALL(nodesel.nodeselselect(self._scip, nodesel, &scip_node))
-    return Node.create(scip_node)
+    #  NOde addons
+    def getRootNode(self):
+        """Retrieve root node."""
+        return Node.create(SCIPgetRootNode(self._scip))
+    
+    def getBestNode(self): 
+        cdef SCIP_NODE* bestnode = SCIPgetBestNode(self._scip)
+        return Node.create(bestnode)
+
+    # Execution add ons : to be called by node selectors 
+    # def executeNodeSel(self, str name): 
+    #     cdef SCIP_NODESEL* scip_nodesel 
+    #     cdef SCIP_RESULT scip_result 
+    #     cdef SCIP_NODE* scip_node
+
+    #     scip_nodesel = SCIPfindNodesel(self._scip, name.encode("UTF-8"))
+
+        # if scip_nodesel == NULL:
+        #     raise ValueError('Error: Node selector not found!')
+        
+        # PY_SCIP_CALL(scip_nodesel.nodeselselect(self._scip, nodesel, &scip_node))
+        
+        # return Node.create(scip_node)
+
+    # def executeNodeComp(self, str name, Node node1, Node node2):
+    #     cdef SCIP_NODESEL* nodesel
+    #     cdef SCIP_RESULT result
+    #     nodesel = SCIPfindNodesel(self._scip, name.encode("UTF-8"))
+    #     if nodesel == NULL:
+    #         raise ValueError('Error: Node selector not found!')
+    #     return nodesel.nodeselcomp(self._scip, nodesel, node1.scip_node, node2.scip_node)
+
+
+
+    # def getStatPrimalDualIntegral(self):
+    #     # return SCIPstatGetPrimalDualIntegral(self._scip.stat, self._scip.set, self._scip.transprob, self._scip.origprob)
+    #     return self._scip.stat.primaldualintegral
+
 
 
 
